@@ -1,0 +1,15 @@
+ion-content.awake {
+	--background: var(--ion-color-primary);
+}
+ion-content {
+	--background: var(--ion-color-danger);
+}
+ion-content::part(background) {
+	transition: all 2s ease-in-out;
+	background-image: url('./../../assets/stars.svg');
+	background-size: 100vw;
+	background-position: center;
+}
+ion-content.awake::part(background) {
+	background-image: url('./../../assets/sun.svg');
+}
