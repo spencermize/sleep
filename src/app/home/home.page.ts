@@ -26,10 +26,18 @@ export class HomePage implements OnInit {
 
 			if (isAfter(now, night) && isBefore(now, morning)) {
 				this.status = false;
-				this.powerManagement.dim();
+				try {
+					this.powerManagement.dim();
+				} catch (e) {
+					
+				}
 			} else {
 				this.status = true;
-				this.powerManagement.acquire();
+				try {
+					this.powerManagement.acquire();
+				} catch (e) {
+
+				}
 			}
 		}, 500);
 	}
