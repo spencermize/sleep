@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PowerManagement } from '@ionic-native/power-management/ngx';
-import { setHours, addDays, isAfter, isBefore, setMinutes } from 'date-fns';
+import { setHours, isAfter, isBefore, setMinutes } from 'date-fns';
 
 @Component({
 	selector: 'app-home',
@@ -12,33 +11,30 @@ export class HomePage implements OnInit {
 	public nightHour = 20;
 	public nightMinute = 0;
 	public morningHour = 7;
-	public morningMinute = 30;
+	public morningMinute = 15;
 	public editing = true;
-	constructor(private powerManagement: PowerManagement) { }
+	constructor() { }
 
 	ngOnInit() {
-		this.powerManagement.acquire();
-
 		setInterval( () => {
 			const now = new Date();
 			const night = setMinutes(setHours(new Date(), this.nightHour), this.nightMinute);
-			const morning = addDays(setMinutes(setHours(new Date(), this.morningHour), this.morningMinute), 1);
+			const morning = setMinutes(setHours(new Date(), this.morningHour), this.morningMinute);
 
-			if (isAfter(now, night) && isBefore(now, morning)) {
-				this.status = false;
-				try {
-					this.powerManagement.dim();
-				} catch (e) {
-					
+			if (isBefore(morning, night)) { // this is an overnight alarm
+				if (isAfter(now, night) || isBefore(now, morning)) {
+					this.status = false;
+				} else {
+					this.status = true;
 				}
 			} else {
-				this.status = true;
-				try {
-					this.powerManagement.acquire();
-				} catch (e) {
-
-				}
+				if (isAfter(now, night) && isBefore(now, morning)) {
+					this.status = false;
+				} else {
+					this.status = true;
+				}	
 			}
+
 		}, 500);
 	}
 
